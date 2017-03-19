@@ -1,14 +1,16 @@
-import React, { Component } from "react";
-import styled from "styled-components";
-import { Motion, spring } from "react-motion";
+import React, { Component } from 'react';
+import styled from 'styled-components';
+import { Motion, spring } from 'react-motion';
 import media from 'theme/media';
+import { white } from 'theme/variables';
 
 const ImgContainer = styled.div`
   width: 400px;
-  height: 150px;
+  height: 200px;
   overflow: hidden;
+  border: 5px solid ${white};
   ${media.tablet`
-    width: 100vw;
+    width: 100%;
   `}
 `;
 
@@ -104,6 +106,7 @@ export default class RollableImage extends Component {
             }
           </Motion>
         </ImgContainer>
+        <p><small>Picture from unsplash.com</small></p>
       </div>
     );
   }

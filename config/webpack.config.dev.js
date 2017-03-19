@@ -129,7 +129,6 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         include: paths.appSrc,
-        loader: 'babel',
         loaders: ['react-hot', 'babel?cacheDirectory=true']
       },
       // "postcss" loader applies autoprefixer to our CSS.
