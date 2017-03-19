@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import RollableImage from 'components/RollableImage/RollableImage';
 import styled from 'styled-components';
 import media from 'theme/media';
-import { white } from 'theme/variables';
+import { black } from 'theme/variables';
 
 const Container = styled.div`
   padding-left: 150px;
@@ -15,7 +15,7 @@ const Container = styled.div`
 
 const LinkButton = styled.a`
   background-color: transparent;
-  border: 3px solid ${white};
+  border: 3px solid ${black};
   padding-top: 7px;
   padding-bottom: 7px;
   padding-left: 20px;

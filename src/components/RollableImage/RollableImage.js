@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Motion, spring } from 'react-motion';
 import media from 'theme/media';
-import { white } from 'theme/variables';
+import { black, white } from 'theme/variables';
 
 const ImgContainer = styled.div`
   width: 400px;
   height: 200px;
   overflow: hidden;
-  border: 5px solid ${white};
+  border: 5px solid ${black};
   ${media.tablet`
     width: 100%;
   `}
