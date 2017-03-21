@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Motion, spring } from 'react-motion';
 import media from 'theme/media';
-import { black, white } from 'theme/variables';
+import { black, white, gray, lightGray } from 'theme/variables';
 
+// --------------Styles-----------------
 const ImgContainer = styled.div`
   width: 400px;
   height: 200px;
@@ -18,10 +19,32 @@ const Image = styled.img`
   height: 100%;
 `;
 
-const between = function between(min, max) {
+const Rectangle = styled.div`
+  margin-top: 25px;
+
+  width: 150px;
+  height: 20px;
+  border: 1px solid ${lightGray};
+`;
+const InnerRectangle = styled.div`
+  margin-top: -1px;
+  margin-left: -1px;
+
+  height: 20px;
+  width: 20px;
+  border: 1px solid ${black};
+  background-color: ${white};
+`;
+
+// -----------Helpers------------------
+
+const between = function between(a, b) {
+  const min = a < b ? a : b;
+  const max = a < b ? b : a;
   return (val) => Math.min(max, Math.max(val, min));
 }
 
+// --------------Component-----------------
 export default class RollableImage extends Component {
   constructor(props) {
     super(props);
@@ -97,7 +120,7 @@ export default class RollableImage extends Component {
             {({ x }) =>
               <Image
                 style={{
-                  transform: `translate(${-k + k * between(-1, 1)(x)}px, 0)`
+                  transform: `translate(${-k + k * between(-1, 1)(-x) - 1}px, 0)`
                 }}
                 onLoad={this.onImageLoad}
                 src={require("assets/view.png")}
@@ -106,6 +129,21 @@ export default class RollableImage extends Component {
             }
           </Motion>
         </ImgContainer>
+        <Rectangle>
+          <Motion style={{ x: spring(mousePositionRatio) }}>
+            {({ x }) =>
+              <InnerRectangle
+                style={{
+                  marginLeft: `${(between(-1, 1)(x) + 1) * 100 * 130 / 150 / 2}%`
+                }}
+              />
+            }
+          </Motion>
+        </Rectangle>
+        <p>
+          Inspired By:&nbsp;
+          <a target="_blank" href="http://bergluft.hervis.at/chapter/2">110%</a>
+        </p>
         <p><small>Picture from unsplash.com</small></p>
       </div>
     );

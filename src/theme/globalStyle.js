@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { injectGlobal } from 'styled-components';
 import { gray, black, yellow, white } from './variables';
 
@@ -17,5 +18,20 @@ injectGlobal`
   button, a {
     color: ${gray};
     font-family: 'VT323', monospace;
+    display: inline-block;
+  }
+
+  * {
+    ${''/* pointer-events: none; */}
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+  }
+
+  a, button {
+    pointer-events: auto;
   }
 `;

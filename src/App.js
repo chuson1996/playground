@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import RollableImage from 'components/RollableImage/RollableImage';
 import styled from 'styled-components';
 import media from 'theme/media';
 import { black } from 'theme/variables';
+import RollableImage from 'components/RollableImage/RollableImage';
+import LongPressMenu from 'components/LongPressMenu/LongPressMenu';
 
 const Container = styled.div`
   padding-left: 150px;
@@ -26,13 +27,23 @@ class App extends Component {
   render() {
     return (
       <Container>
-        <h1>Welcome to my playground</h1>
+        <h1>@code_everyday's playground</h1>
         <hr/>
         <h2>RollableImage: <small>(Try this on your phone)</small></h2>
         <RollableImage/>
         <LinkButton
           target="_blank"
           href="https://github.com/chuson1996/playground/blob/master/src/components/RollableImage/RollableImage.js">Source</LinkButton>
+        <br/>
+        <hr/>
+        <h2>LongPressMenu</h2>
+        <p>Long press on your mobile to see this in action</p>
+        <p>Long press on your mobile to see this in action</p>
+        <p>Long press on your mobile to see this in action</p>
+        <p>Long press on your mobile to see this in action</p>
+        <p>Long press on your mobile to see this in action</p>
+        <p>Long press on your mobile to see this in action</p>
+        <LongPressMenu/>
       </Container>
     );
   }
