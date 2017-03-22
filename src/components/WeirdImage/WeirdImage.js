@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import styled, { css } from 'styled-components';
+import media from 'theme/media';
 
 const Container = styled.div`
   width: 400px;
   height: 250px;
   position: relative;
+
+  ${media.tablet`
+    width: 100%;
+    height: 250px;
+  `}
 `;
 
 const producePolygon = ({ x, y, w, h }) => {

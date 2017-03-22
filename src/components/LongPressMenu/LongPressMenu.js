@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import styled, { css } from 'styled-components';
-import { white, yellow, red } from 'theme/variables';
+import { white, blue, yellow, red } from 'theme/variables';
+import { Motion, spring } from 'react-motion';
+
+const easingFunction = 'cubic-bezier(0.175, 0.885, 0.32, 1.275)';
 
 const Container = styled.div`
   width: 100vw;
@@ -10,6 +13,7 @@ const Container = styled.div`
   top: 0;
   left: 0;
   pointer-events: none;
+  z-index: 98;
 `;
 
 const Menu = styled.div`
@@ -18,7 +22,7 @@ const Menu = styled.div`
 
   ${''/* opacity: 1; */}
   transform: skewX(0deg) translate(0, 0);
-  transition: transform .5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity .2s ease-in-out;
+  transition: transform .5s ${easingFunction}, opacity .2s ${easingFunction};
   ${ ({ close }) => close && css`
     transform: skewX(-20deg) translate(-140%, 0);
     ${''/* opacity: 0; */}
@@ -49,6 +53,24 @@ const Message = styled.h1`
   z-index: 99; */}
 `;
 
+const Circle = styled.div`
+  position: fixed;
+  z-index: 99;
+  opacity: 0.4;
+  background-color: ${blue};
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  top: 0;
+  left: 0;
+
+  transform: translate(-50%, -50%) scale(1);
+  transition: transform .3s ${easingFunction};
+  ${ ({ hide }) => hide && css`
+    transform: translate(-50%, -50%) scale(0);
+  `}
+`;
+
 // ------------ Component ------------------
 // -----------------------------------------
 
@@ -60,7 +82,8 @@ export default class LongPressNenu extends Component {
       pressing: false,
       moving: false,
       message: `Haven't picked anything yet.`,
-      activeOption: null
+      activeOption: null,
+      mousePosition: { x: null, y: null }
     };
   }
 
@@ -104,8 +127,16 @@ export default class LongPressNenu extends Component {
     if (this.timeout) {
       clearTimeout(this.timeout);
     }
-
   };
+
+  moveCircle = ({ clientX, clientY }) => {
+    this.setState({
+      mousePosition: {
+        x: clientX,
+        y: clientY,
+      }
+    });
+  }
 
   onTouchMove = (e) => {
     this.setState({
@@ -119,9 +150,10 @@ export default class LongPressNenu extends Component {
   };
 
   adjustOptionsProps = (e) => {
-    const clientY = (e.touches && e.touches.length) ?
-      e.touches[0].clientY :
-      e.changedTouches[0].clientY;
+    const { clientY, clientX } = (e.touches && e.touches.length) ?
+      e.touches[0] : e.changedTouches[0];
+
+    this.moveCircle({ clientX, clientY });
 
     Object.keys(this.options).forEach((key) => {
       const elem = this.options[key];
@@ -151,11 +183,31 @@ export default class LongPressNenu extends Component {
       // option1Active,
       // option2Active,
       activeOption,
+      mousePosition,
     } = this.state;
+
+    const preset = {
+      stiffness: 163,
+      damping: 15
+    };
 
     return (
       <div>
         <Message>{message}</Message>
+        <Motion
+          style={{
+            x: spring(mousePosition.x, preset),
+            y: spring(mousePosition.y, preset)
+          }}>
+            {({ x, y }) =>
+              <Circle
+                hide={!pressing}
+                style={{
+                  top: y,
+                  left: x
+                }}/>
+            }
+          </Motion>
         <Container
           open={pressing}
         >
