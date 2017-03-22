@@ -4,6 +4,7 @@ import media from 'theme/media';
 import { black } from 'theme/variables';
 import RollableImage from 'components/RollableImage/RollableImage';
 import LongPressMenu from 'components/LongPressMenu/LongPressMenu';
+import WeirdImage from 'components/WeirdImage/WeirdImage';
 
 const Container = styled.div`
   padding-left: 150px;
@@ -31,18 +32,47 @@ class App extends Component {
         <hr/>
         <h2>RollableImage: <small>(Try this on your phone)</small></h2>
         <RollableImage/>
+        <p>
+          Inspired By:&nbsp;
+          <a target="_blank" href="http://bergluft.hervis.at/chapter/2">110%</a>
+        </p>
         <LinkButton
           target="_blank"
-          href="https://github.com/chuson1996/playground/blob/master/src/components/RollableImage/RollableImage.js">Source</LinkButton>
+          href="https://github.com/chuson1996/playground/blob/master/src/components/RollableImage/RollableImage.js">
+          Source
+        </LinkButton>
         <br/>
         <hr/>
         <h2>LongPressMenu</h2>
         <p>Long press on your mobile to open the menu</p>
         <LongPressMenu/>
+        <p>
+          Inspired By:&nbsp;
+          <a target="_blank" href="http://bergluft.hervis.at/chapter/2">110%</a>
+        </p>
         <LinkButton
           target="_blank"
-          href="https://github.com/chuson1996/playground/blob/master/src/components/LongPressMenu/LongPressMenu.js">Source</LinkButton>
-
+          href="https://github.com/chuson1996/playground/blob/master/src/components/LongPressMenu/LongPressMenu.js">
+          Source
+        </LinkButton>
+        <br/>
+        <hr/>
+        <h2>WeirdImage</h2>
+        <p>Hover over the image</p>
+        <WeirdImage/>
+        <p>
+          Inspired By:&nbsp;
+          <a target="_blank" href="http://www.danielspatzek.com/">Daniel Spatzek</a>
+        </p>
+        <LinkButton
+          target="_blank"
+          href="https://github.com/chuson1996/playground/blob/master/src/components/WeirdImage/WeirdImage.js">
+          Source
+        </LinkButton>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
       </Container>
     );
   }

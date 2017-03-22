@@ -140,10 +140,6 @@ export default class RollableImage extends Component {
             }
           </Motion>
         </Rectangle>
-        <p>
-          Inspired By:&nbsp;
-          <a target="_blank" href="http://bergluft.hervis.at/chapter/2">110%</a>
-        </p>
         <p><small>Picture from unsplash.com</small></p>
       </div>
     );
