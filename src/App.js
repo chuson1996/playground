@@ -37,13 +37,12 @@ class App extends Component {
         <br/>
         <hr/>
         <h2>LongPressMenu</h2>
-        <p>Long press on your mobile to see this in action</p>
-        <p>Long press on your mobile to see this in action</p>
-        <p>Long press on your mobile to see this in action</p>
-        <p>Long press on your mobile to see this in action</p>
-        <p>Long press on your mobile to see this in action</p>
-        <p>Long press on your mobile to see this in action</p>
+        <p>Long press on your mobile to open the menu</p>
         <LongPressMenu/>
+        <LinkButton
+          target="_blank"
+          href="https://github.com/chuson1996/playground/blob/master/src/components/LongPressMenu/LongPressMenu.js">Source</LinkButton>
+
       </Container>
     );
   }

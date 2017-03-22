@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled, { css } from 'styled-components';
-import { white, yellow } from 'theme/variables';
+import { white, yellow, red } from 'theme/variables';
 
 const Container = styled.div`
   width: 100vw;
@@ -13,30 +13,34 @@ const Container = styled.div`
 `;
 
 const Menu = styled.div`
-  opacity: 1;
   height: 100%;
-
   pointer-events: none;
-  transition: opacity .2s ease-in;
+
+  ${''/* opacity: 1; */}
+  transform: skewX(0deg) translate(0, 0);
+  transition: transform .5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity .2s ease-in-out;
   ${ ({ close }) => close && css`
-    opacity: 0;
+    transform: skewX(-20deg) translate(-140%, 0);
+    ${''/* opacity: 0; */}
   `}
 `;
 
 const Option = styled.div`
   width: 100%;
-  height: 50%;
-  background-color: red;
-  border-bottom: 1px solid white;
+  height: 20%;
+  ${''/* border-bottom: 1px solid ${white}; */}
   font-size: 2em;
+  text-align: center;
 
   display: flex;
+  flex-direction: column;
   align-content: center;
   justify-content: center;
 
+  background-color: ${red};
   transition: background-color .2s ease-in;
   ${ ({ active }) => active && css`
-    background-color: yellow;
+    background-color: ${yellow};
   `}
 `;
 
@@ -45,15 +49,18 @@ const Message = styled.h1`
   z-index: 99; */}
 `;
 
+// ------------ Component ------------------
+// -----------------------------------------
+
 export default class LongPressNenu extends Component {
   constructor(props) {
     super(props);
+    this.options = {};
     this.state = {
       pressing: false,
       moving: false,
-      message: '....11??',
-      option1Active: false,
-      option2Active: false
+      message: `Haven't picked anything yet.`,
+      activeOption: null
     };
   }
 
@@ -77,14 +84,16 @@ export default class LongPressNenu extends Component {
 
   onTouchEnd = (e) => {
     if (this.state.pressing) {
-      // console.log(e.touches);
-      // console.log(e.pageY);
-      // console.log(e.changedTouches[0].pageY);
-      this.setState({
-        message: (e.changedTouches[0].clientY / window.innerHeight < 1/2) ?
-          'Just click link 1':
-          'Just click link 2'
-      });
+      const { clientY } = e.changedTouches[0];
+      for (const key of Object.keys(this.options)) {
+        const elem = this.options[key];
+        if (this.isOptionSelected(elem, { clientY })) {
+          this.setState({
+            message: `Just selected ${key}`
+          });
+          break;
+        }
+      }
     }
     this.setState({
       pressing: false,
@@ -103,9 +112,6 @@ export default class LongPressNenu extends Component {
       moving: true
     });
     const { pressing } = this.state;
-    // this.setState({
-    //   message: e.touches[0].pageY
-    // });
     if (pressing) {
       e.preventDefault();
       this.adjustOptionsProps(e);
@@ -113,27 +119,28 @@ export default class LongPressNenu extends Component {
   };
 
   adjustOptionsProps = (e) => {
-    const pageY = (e.touches && e.touches.length) ?
+    const clientY = (e.touches && e.touches.length) ?
       e.touches[0].clientY :
       e.changedTouches[0].clientY;
 
-    if (pageY / window.innerHeight < 1/2) {
-      this.setState({
-        option1Active: true,
-        option2Active: false
-      });
-    } else {
-      this.setState({
-        option1Active: false,
-        option2Active: true
-      });
-    }
+    Object.keys(this.options).forEach((key) => {
+      const elem = this.options[key];
+      if (this.isOptionSelected(elem, { clientY })) {
+        this.setState({
+          activeOption: key
+        })
+      }
+    })
   }
 
-  onLinkSelected = () => {
-    this.setState({
-      message: 'A Link is selected'
-    });
+  isOptionSelected(elem, mousePosition) {
+    const { top, height } = elem.getBoundingClientRect();
+    const { clientY } = mousePosition;
+    return clientY > top && clientY < top + height;
+  }
+
+  registerOption = (key) => (elem) => {
+    this.options[key] = elem;
   }
 
   render() {
@@ -141,8 +148,9 @@ export default class LongPressNenu extends Component {
       pressing,
       // moving,
       message,
-      option1Active,
-      option2Active
+      // option1Active,
+      // option2Active,
+      activeOption,
     } = this.state;
 
     return (
@@ -150,18 +158,25 @@ export default class LongPressNenu extends Component {
         <Message>{message}</Message>
         <Container
           open={pressing}
-          // onMouseDown={this.onTouchStart}
-          // onMouseUp={this.onTouchEnd}
-          // onMouseMove={this.onTouchMove}
-          // onTouchEnd={this.onTouchEnd}
-          // onTouchMove={this.onTouchMove}
-          // onTouchStart={this.onTouchStart}
         >
-            <Menu close={!pressing}>
-              <Option active={option1Active}>Link1</Option>
-              <Option active={option2Active}>Link2</Option>
-            </Menu>
-          </Container>
+          <Menu close={!pressing}>
+            <Option
+              innerRef={this.registerOption('link1')}
+              active={activeOption === 'link1'}>Link1</Option>
+            <Option
+              innerRef={this.registerOption('link2')}
+              active={activeOption === 'link2'}>Link2</Option>
+            <Option
+              innerRef={this.registerOption('link3')}
+              active={activeOption === 'link3'}>Link3</Option>
+            <Option
+              innerRef={this.registerOption('link4')}
+              active={activeOption === 'link4'}>Link4</Option>
+            <Option
+              innerRef={this.registerOption('link5')}
+              active={activeOption === 'link5'}>Link5</Option>
+          </Menu>
+        </Container>
       </div>
     );
   }
