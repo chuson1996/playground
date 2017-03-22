@@ -60,6 +60,7 @@ class App extends Component {
         <h2>WeirdImage</h2>
         <p>Hover over the image</p>
         <WeirdImage/>
+        <p>Knowledge Applied: clip-path, <a target="_blank" href="https://www.viget.com/articles/film-grain-effect">film-grain</a></p>
         <p>
           Inspired By:&nbsp;
           <a target="_blank" href="http://www.danielspatzek.com/">Daniel Spatzek</a>
