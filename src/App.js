@@ -91,6 +91,7 @@ class App extends Component {
               <StyledFoldImage
                 noCol={4}
                 noRow={4}
+                earlyRatio={0.4}
                 startingPoint={0}
                 startingDirection={'down'}
                 src={'https://upload.wikimedia.org/wikipedia/commons/6/68/Great_Ex_Telescope_Telescope.jpg'}

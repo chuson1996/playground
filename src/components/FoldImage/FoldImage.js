@@ -11,7 +11,19 @@ const Container = styled.div`
 
 const CanvasContainer = styled.div`
   display: flex;
-  perspective: 300px;
+  perspective: 500px;
+
+  ${({ left }) => left && css`perspective-origin: left;`}
+  ${({ right }) => right && css`perspective-origin: right;`}
+
+  ${({ hide }) => hide && css`
+    ${({ direction }) => direction === 'down' && css`
+      perspective-origin: top;
+    `}
+    ${({ direction }) => direction === 'toRight' && css`
+      perspective-origin: left;
+    `}
+  `}
 
   ${({ animating }) => animating && css`
     ${({ direction }) => direction === 'down' && css`
@@ -25,9 +37,10 @@ const CanvasContainer = styled.div`
 
 const easing = 'cubic-bezier(0.360, 0.000, 0.000, 1.525)';
 const Canvas = styled.canvas`
-  transition: transform ${({ duration }) => duration || 0.3}s ${easing}, opacity ${({ duration }) => duration / 2 || 0.3}s;
+  transition: transform ${({ duration }) => duration || 0.3}s ${easing}, opacity ${({ duration }) => duration || 0.3}s ${easing};
 
-  ${({ animating }) => !animating && css`
+  // When it's not animating and it's visible
+  ${({ animating, hide }) => (!animating && !hide) && css`
     ${({ left }) => left && css`
       transform-origin: right;
       &:hover {
@@ -79,38 +92,41 @@ const Canvas = styled.canvas`
   `}
 
   opacity: 1;
-  ${({ hide, direction }) => {
-    if (direction === 'down') return css`
-      ${({ animating }) => animating && css`
-        transform-origin: top;
-      `}
+  ${({ hide, direction, animating }) => {
+    return css`
       ${hide && css`
         opacity: 0;
-        transform: rotateX(90deg);`}
-    `;
-    if (direction === 'toRight') return css`
-      ${({ animating }) => animating && css`
-        transform-origin: left;
       `}
-      ${hide && css`
-        opacity: 0;
-        transform: rotateY(-90deg);`}
-    `;
-    if (direction === 'up') return css`
-      ${({ animating }) => animating && css`
-        transform-origin: bottom;
-      `}
-      ${hide && css`
-        opacity: 0;
-        transform: rotateX(90deg);`}
-    `;
-    if (direction === 'toLeft') return css`
-      ${({ animating }) => animating && css`
-        transform-origin: right;
-      `}
-      ${hide && css`
-        opacity: 0;
-        transform: rotateY(90deg);`}
+      ${() => {
+        if (direction === 'down') return css`
+          ${(hide || animating) && css`
+            transform-origin: top;
+          `}
+          ${hide && css`
+            transform: rotateX(90deg);`}
+        `;
+        if (direction === 'toRight') return css`
+          ${(hide || animating) && css`
+            transform-origin: left;
+          `}
+          ${hide && css`
+            transform: rotateY(-90deg);`}
+        `;
+        if (direction === 'up') return css`
+          ${(hide || animating) && css`
+            transform-origin: bottom;
+          `}
+          ${hide && css`
+            transform: rotateX(90deg);`}
+        `;
+        if (direction === 'toLeft') return css`
+          ${(hide || animating) && css`
+            transform-origin: right;
+          `}
+          ${hide && css`
+            transform: rotateY(90deg);`}
+        `;
+      }}
     `;
   }}
 `;
@@ -118,11 +134,6 @@ const Canvas = styled.canvas`
 const Relative = styled.div`
   position: relative;
 `;
-
-// --------------- CONSTANTS ------------------
-const AM_SLOW = 1;
-const AM_FAST = AM_SLOW * 0.8;
-const EARLY_RATIO = 0.5;
 
 // --------------- Component -------------------
 
@@ -133,12 +144,16 @@ export default class FoldImage extends Component {
     noRow: PropTypes.number,
     startingPoint: PropTypes.number,
     startingDirection: PropTypes.string,
-    hide: PropTypes.bool
+    hide: PropTypes.bool,
+    foldingSpeed: PropTypes.number,
+    earlyRatio: PropTypes.number
   };
 
   static defaultProps = {
     noCol: 4,
     noRow: 4,
+    foldingSpeed: 0.7, // s
+    earlyRatio: 0.3,
   };
 
   constructor(props) {
@@ -169,7 +184,7 @@ export default class FoldImage extends Component {
     }
 
     if (this.isChanged(this.props, nextProps, ['startingPoint', 'noCol', 'noRow'])) {
-      this.generateAnimationMatrix(nextProps.startingPoint, AM_FAST, 0, nextProps.startingDirection);
+      this.generateAnimationMatrix(nextProps.startingPoint, this.props.foldingSpeed, 0, nextProps.startingDirection);
     }
   }
 
@@ -190,7 +205,7 @@ export default class FoldImage extends Component {
       this.draw();
     };
 
-    this.generateAnimationMatrix(startingPoint, AM_FAST, 0, startingDirection);
+    this.generateAnimationMatrix(startingPoint, this.props.foldingSpeed, 0, startingDirection);
     if (!this.props.hide) {
       this.animateIn();
     }
@@ -198,6 +213,10 @@ export default class FoldImage extends Component {
 
   generateAnimationMatrix(start, duration = 0, startingTimestamp = 0, direction = null, trace = []) {
     if (start < 0 || start > this.props.noCol * this.props.noRow) return;
+
+    const AM_SLOW = this.props.foldingSpeed;
+    const AM_FAST = AM_SLOW * 0.8;
+
     if (!this.animationMatrix[start]) {
       // console.log(`${start}: ${startingTimestamp}. ${direction}. Prev ${last(trace)}`);
       this.animationMatrix[start] = {
@@ -315,6 +334,7 @@ export default class FoldImage extends Component {
 
   animateIn() {
     this.clearTimeouts();
+    const EARLY_RATIO = this.props.earlyRatio;
     for (const i in this.animationMatrix) {
       const { startingTimestamp, duration } = this.animationMatrix[i];
       const timeout = setTimeout(() => {
@@ -349,6 +369,7 @@ export default class FoldImage extends Component {
 
   animateOut() {
     this.clearTimeouts();
+    const EARLY_RATIO = this.props.earlyRatio;
     for (const i in this.animationMatrix) {
       const { startingTimestamp, duration } = this.animationMatrix[i];
       const timeout = setTimeout(() => {
